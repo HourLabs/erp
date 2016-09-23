@@ -72,7 +72,7 @@
 							
 							
 							   <li class="dropdown">
-									<a href="javascript:;">
+									<a href="view_users.php">
 										<i class="icon-users"></i> View Users
 									</a>
                                 </li>
@@ -116,14 +116,20 @@
                                 </li>
                                 <li class="dropdown">
                                     <a href="issue_rasid_book.php">
-                                        <i class="icon-docs"></i> Issue Rasid Book </a>
+                                        <i class="icon-docs"></i>Issue Rasid Book </a>
                                     
                                 </li>
 								
 								
+								<li class="dropdown">
+                                    <a href="view_issued_rasid_book.php">
+                                        <i class="fa fa-share"></i> View Issued Rasid Book </a>
+                                    
+                                </li>
+								
                                 <li class="dropdown">
                                     <a href="javascript:;">
-                                        <i class="icon-user"></i> Retun Rasid Book </a>
+                                        <i class="fa fa-retweet"></i> Retun Rasid Book </a>
                                     
                                 </li>
                                 
