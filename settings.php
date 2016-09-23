@@ -4,7 +4,7 @@
 	$password = "";
 
 	// Create connection
-	$conn = mysqli_connect($servername, $username, $password, "erp");
+	$conn = mysqli_connect($servername, $username, $password, "pathmeda_erp");
 
 	// Check connection
 	if (!$conn) {

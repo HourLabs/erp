@@ -1,14 +1,14 @@
 <?php
 
 
-include("connection_db.php");
+	include("settings.php");
 
-include("header.php");
+	include("header.php");
 
-include("header_menu.php");
+	include("header_menu.php");
 
-	$sql = "select * from user_details";
-	$result = mysqli_query($con,$sql);
+	$sql = "select * from user_table";
+	$result = mysqli_query($conn,$sql);
 	$c = mysqli_num_rows($result);
 
 
@@ -34,10 +34,11 @@ include("header_menu.php");
                                             <tr>
                                                 <th>
                                                     <input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes" /> </th>
-                                                <th> Username </th>
-                                                <th> Email </th>
+                                                <th> Sr No</th>
+                                                <th> User Name</th>
+                                                
                                                 <th> Mobile No </th>
-                                                <th> Pincode</th>
+                                                <th> Email </th>
                                                 <th> Actions </th>
                                             </tr>
                                         </thead>
@@ -45,6 +46,7 @@ include("header_menu.php");
                                         <tbody>
 										
 											<?php
+												$a=1;
 												$i=1;
 												while($Rs=mysqli_fetch_array($result))
 												{
@@ -56,30 +58,29 @@ include("header_menu.php");
                                                 <td>
                                                     <input type="checkbox" class="checkboxes" value="1" />
 												</td>
-												
+												<td>
+														<?php echo $a; ?>
+                                                </td>
 												<td> 
-														<?php echo $Rs['user_first_name']; ?>
+														
+														<?php echo $Rs['u_name']; ?>
+														<?php echo $Rs['u_first_name']; ?>
+														<?php echo $Rs['u_last_name']; ?>
 												</td>
 												
                                                 <td>
-                                                    <a href="mailto:shuxer@gmail.com"> 	<?php echo $Rs['user_email']; ?>  </a>
+														<?php echo $Rs['u_mobile_no']; ?>
+                                                </td>
+												<td>
+														<?php echo $Rs['u_email_id']; ?>
                                                 </td>
 												
-                                                <td>
+                                                
 												
-												</td>
-												
-                                                <td class="center"> 
-														<?php echo $Rs['user_pincode']; ?>
-												</td>
-												
-                                                <td>
-                                                    <span class="label label-sm label-success"> Approved </span>
-													
-													<!-- edit label -->
+                                                
                                                     
-													
-													<a href="edit_user.php?id=<?php echo $Rs['user_id'];?>" class="font-blue btn btn-xs"  type="button" data-toggle="tooltip" title="Edit User">
+												<td>	
+													<a href="edit_user.php?id=<?php echo $Rs['u_id'];?>" class="font-blue btn btn-xs"  type="button" data-toggle="tooltip" title="Edit User">
 														
 														<i class="fa fa-pencil"></i>
 													
@@ -89,7 +90,7 @@ include("header_menu.php");
 													<!-- delete label -->
                                                     
 													
-													<a onclick="return ConfirmDel('<?php echo $i;?>')" href="delete_user.php?id=<?php echo $Rs['user_id'];?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="Remove Bus">
+													<a onclick="return ConfirmDel('<?php echo $i;?>')" href="delete_user.php?id=<?php echo $Rs['u_id'];?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="Remove Bus">
 														
 														<i class="fa fa-times"></i>
 														
@@ -104,6 +105,7 @@ include("header_menu.php");
 											
 											<?php
 												$i++;
+												$a++;
 												}
 											?>
 											

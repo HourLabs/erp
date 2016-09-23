@@ -1,61 +1,65 @@
 <?php
 ob_start();
 include_once 'settings.php';
-include 'header1.php';
-include 'footer1.php';
+include 'header.php';
+include 'header_menu.php';
 
 
 
+if (isset($_POST) && !empty($_POST)) 
+{
 $sb_type = $_POST['sb_type'];
-$sb_start_date = $_POST['sb_start_date'];
-$sb_end_date = $_POST['sb_end_date'];
-$sb_modified_date = $_POST['sb_modified_date'];
+$start_date = $_POST['sb_start_date'];
+$sb_start_date = str_replace('/', '-', $start_date);
+$sb_start_date = date('Y-d-m',strtotime($sb_start_date));
+$end_date = $_POST['sb_end_date'];
+$sb_end_date = str_replace('/', '-', $end_date);
+$sb_end_date = date('Y-d-m',strtotime($sb_end_date));
+//$sb_modified_date = $_POST['sb_modified_date'];
 $sb_payment_method = $_POST['sb_payment_method'];
-$sb_payment_date = $_POST['sb_payment_date'];
-$sb_approval_status = $_POST['sb_approval_status'];
+$payment_date = $_POST['sb_payment_date'];
+$sb_payment_date = str_replace('/', '-', $start_date);
+$sb_payment_date = date('Y-d-m',strtotime($sb_payment_date));
+}
+$query = "SELECT u_id from user_table ORDER BY u_id DESC LIMIT 1";
+
+    try{
+        $result = mysqli_query($conn, $query);
+        if($result)
+        {
+            while($row = (mysqli_fetch_array($result)))
+            {
+                //echo $row['u_id'];
+                //echo $result;
+                //echo $row['user_no'];
+                $a = $row['u_id'];
+                
+            }
+        }       
+        if(!empty($a))                    
+        $sb_u_id = $a;
+        
+    }   catch (Exception $ex) {
+        echo 'Error echo '.$ex->getMessage();
+    }
 
 if(isset($_POST['page2']))
 {$query="INSERT INTO subscription_details
- VALUES ('$sb_id', '$sb_u_id', '$sb_type', '$sb_start_date', '$sb_end_date', '$sb_modified_date', '$sb_payment_method', '$sb_payment_date', '$sb_approval_status')";
+(sb_u_id,sb_type,sb_start_date,sb_end_date,sb_payment_method,sb_payment_date
+)
+ VALUES ('$sb_u_id', '$sb_type', '$sb_start_date', '$sb_end_date', '$sb_payment_method', '$sb_payment_date')";
 if($conn->query($query))
 	{
+        print_r($_POST);
+        echo "$sb_start_date";
 	}
 else
 	{
 	die('Error: ' . mysqli_error($conn));
 	}
-	header("Location:relationship_details.php");
+	//header("Location:relationship_details.php");
 }
-// if(isset($_POST['delete']))
-// {
-// 	$query="DELETE FROM subscription_details WHERE ";
-// 	if($conn->query($query))
-// 	{
 
-// 	}
-// 	else
-// 	{
-// 	die('Error: ' . mysqli_error($conn));
-// 	}
-// }
-// if(isset($_POST['update']))
-// {$query = "UPDATE subscription_details 
-// SET  
-// WHERE ";
-// if($conn->query($query))
-// {
-// 	if(mysqli_affected_rows($conn)>0)
-// 	{
-
-// 	}
-// 	else
-// 	{
-		
-// 	}
-// }else{
-// 	die('Error: ' . mysqli_error($conn));
-// }
-//}
 $conn->close();
 ?>
 
@@ -127,7 +131,40 @@ Like: www.facebook.com/keenthemes
         <link href="../assets/layouts/layout5/css/custom.min.css" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
         <link rel="shortcut icon" href="favicon.ico" /> </head>
+         <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+        <script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
     <!-- END HEAD -->
+
+       <script>
+         $(function() {
+  
+    // Setup form validation on the #register-form element
+    $("#sub").validate({
+    
+        // Specify the validation rules
+        rules: {
+                
+                sb_start_date: "required",
+                sb_end_date: "required",
+                sb_payment_date: "required"
+                },
+        
+        // Specify the validation error messages
+        messages: {
+                sb_start_date: "Please enter the date",
+                sb_end_date: "Please enter the date",
+                sb_payment_date: "Please enter the date"
+            
+        },
+        
+        submitHandler: function(form) {
+            form.submit();
+        }
+    });
+
+  });
+     
+       </script>
 	
 	
 		<!-- BEGIN Bootstrap Form Helpers -->
@@ -186,7 +223,7 @@ Like: www.facebook.com/keenthemes
 													
                                                     <!-- CHANGE PASSWORD TAB -->
                                                     <div class="tab-pane active" id="tab_1_3">
-                                                        <form action="sub_details.php" method = "post">
+                                                        <form action="sub_details.php" method = "post" id = "sub">
                                             
                                                                
 																
@@ -219,16 +256,7 @@ Like: www.facebook.com/keenthemes
                                                 
                                               <input class="form-control form-control-inline input-medium date-picker" name="sb_end_date" size="16" type="text" value="" required /></div>
 															</div>
-															<div class="form-group">
-																<label class="control-label">Subscription Modified Date</label>
-																<div class="input-group input-icon right">
-																	<span class="input-group-addon">
-																	<i class="fa fa-calendar font-blue"></i>
-																	</span>
-														
-                                                
-                                              <input class="form-control form-control-inline input-medium date-picker" name="sb_modified_date" size="16" type="text" value="" required /></div>
-															</div>
+															
 																<div class="form-group">
 																
 																<label class="control-label">Payment method</label>
@@ -249,15 +277,7 @@ Like: www.facebook.com/keenthemes
                                               <input class="form-control form-control-inline input-medium date-picker" name="sb_payment_date" size="16" type="text" value="" required /></div>
 															</div>
                                                             
-															<div class="form-group">
-																
-																<label class="control-label">Approval Status</label>
-																		<select class="form-control input-small" name="sb_approval_status">
-																			<option>Pending</option>
-																			<option>Approved</option>
-																			<option>Cancelled</option>
-																		</select>
-																</div>
+															
                                                             
                                                             <div class="margin-top-10">
 															<button type="submit" class="btn green" name="page2" id="insert"> Next</button> 
@@ -901,6 +921,8 @@ Like: www.facebook.com/keenthemes
         <script src="../assets/layouts/layout5/scripts/layout.min.js" type="text/javascript"></script>
         <script src="../assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
+        <?php include 'footer.php';
+        ?>
     </body>
 
 </html>

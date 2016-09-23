@@ -1,12 +1,12 @@
 <?php
 
-include("connection_db.php");
+include("settings.php");
 
-	$id=$_REQUEST['id'];
-	$Query = "delete from  user_details where user_id=$id";
+	$id=$_GET['id'];
+	$Query = "delete from  user_table where u_id=$id";
 
 
 	//echo "$Query";
-	$rs = mysqli_query($con,$Query);
+	$rs = mysqli_query($conn,$Query);
 
 ?>

@@ -1,15 +1,26 @@
 <?php
 
 
-include("connection_db.php");
+include("settings.php");
 
 include("header.php");
 
 include("header_menu.php");
-
-
-
-
+if(isset($_POST) && !empty($_POST))
+{
+	$r_book_id=$_POST['r_book_id'];
+	$r_book_starting_no=$_POST['r_book_starting_no'];
+	$r_book_end_no=$_POST['r_book_end_no'];
+$sql="INSERT INTO rasid_stock_management 
+(r_book_id,r_book_starting_no,r_book_end_no)
+VALUES ('$r_book_id', '$r_book_starting_no', '$r_book_end_no')";
+if($conn->query($sql))
+{}
+else
+{
+	die('Error: ' . mysqli_error($conn));
+}
+}
 ?>	
 
 
@@ -51,14 +62,14 @@ include("header_menu.php");
                                                 <div class="tab-content">
                                                     <!-- PERSONAL INFO TAB -->
                                                     <div class="tab-pane active" id="tab_1_1">
-                                                        <form role="form" action="#">
-                                                            <div class="form-group">
+                                                        <form role="form" action="#" method="post">
+                                                            <div class="form-group" >
                                                                 <label class="control-label">Rasid Book Number</label>
 																<div class="input-group input-icon right">
 																	<span class="input-group-addon">
 																	<i class="fa fa-book font-blue"></i>
 																	</span>
-                                                                <input type="text" placeholder="12345678" class="form-control" /> </div>
+                                                                <input type="text" placeholder="12345678" class="form-control" name="r_book_id" required="" /> </div>
 															</div>
 															
                                                             <div class="form-group">
@@ -67,7 +78,7 @@ include("header_menu.php");
 																	<span class="input-group-addon">
 																	<i class="fa fa-forward font-blue"></i>
 																	</span>
-                                                                <input type="text" placeholder="xxxxx" class="form-control" /> </div>
+                                                                <input type="text" placeholder="xxxxx" class="form-control" name="r_book_starting_no" required="" /> </div>
 															</div>
 															
 															
@@ -77,7 +88,8 @@ include("header_menu.php");
 																	<span class="input-group-addon">
 																	<i class="fa fa-backward font-blue"></i>
 																	</span>
-                                                                <input type="text" placeholder="xxxxx" class="form-control" /> </div>
+                                                                <input type="text" placeholder="xxxxx" class="form-control" 
+                                                                name="r_book_end_no" required="" /> </div>
 															</div>
 																
 													

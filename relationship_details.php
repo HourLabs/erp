@@ -1,35 +1,70 @@
 <?php
 include 'settings.php';
-include 'header1.php';
-include 'footer1.php';
-$cnt = sizeof(reset($_POST));
-for ($i=0; $i <$cnt ; $i++) 
-{ 
-    $u_rel_id = $_POST['u_rel_id'];
-    $u_id = $_POST['u_id'];
-    $u_rel_first_name = $_POST['u_rel_first_name'][$i];
-    $u_rel_last_name = $_POST['u_rel_last_name'][$i];
-    $u_rel_email_id = $_POST['u_rel_email_id'][$i];
-    $u_rel_mobile_no = $_POST['u_rel_mobile_no'][$i];
-    $u_rel_dob = $_POST['u_rel_dob'][$i];
-    $u_rel_type = $_POST['u_rel_type'][$i];
-    $u_rel_created_date = $_POST['u_rel_created_date'][$i]; 
-    $u_rel_modified_date = $_POST['u_rel_modified_date'][$i];
-
-if(isset($_POST['last']))
+include 'header.php';
+include 'header_menu.php';
+if (isset($_POST) && !empty($_POST) && $_SERVER['REQUEST_METHOD'] == "POST") 
 {
-	$sql = "INSERT INTO user_relationship_table VALUES('$u_rel_first_name',' $u_rel_last_name','$u_rel_email_id','$u_rel_mobile_no','$u_rel_dob','$u_rel_type','$u_rel_created_date','$u_rel_modified_date')";
-    if($conn->query($sql))
-    {
+    $cnt = sizeof(reset($_POST));
+    for ($i=0; $i <$cnt ; $i++) 
+    { 
+        $u_rel_first_name = $_POST['u_rel_first_name'][$i];
+        $u_rel_last_name = $_POST['u_rel_last_name'][$i];
+        $u_rel_email_id = $_POST['u_rel_email_id'][$i];
+        $u_rel_mobile_no = $_POST['u_rel_mobile_no'][$i];
+        $rel_dob = $_POST['u_rel_dob'][$i];
+        $u_rel_dob = str_replace('/', '-', $rel_dob);
+        $u_rel_dob = date('Y-d-m',strtotime($u_rel_dob));
+        $u_rel_type = $_POST['u_rel_type'][$i];
+        if(!is_string($u_rel_first_name) || !is_string($u_rel_last_name))
+        {
+            echo"<script>alert('First Name and Last Name should be strin');</script>";
+        }
+        else if(!is_numeric($u_rel_mobile_no) || strlen($u_rel_mobile_no)!=10)
+        {
+            echo"<script>alert('Mobile no. should be of 10 digits.');</script>";
+        }
+        else if (!preg_match("/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/i",$u_rel_email_id)) 
+        {
+            echo"<script>alert('Enter a valid email address');</script>";
+        }
+        else{
+        $query = "SELECT u_id from user_table ORDER BY u_id DESC LIMIT 1";
 
+        try{
+            $result = mysqli_query($conn, $query);
+            if($result)
+            {
+                while($row = (mysqli_fetch_array($result)))
+                {
+                    //echo $row['u_id'];
+                    //echo $result;
+                    //echo $row['user_no'];
+                    $a = $row['u_id'];
+                    
+                }
+            }       
+             if(!empty($a))                   
+            $u_id = $a;
+            
+        }   catch (Exception $ex) {
+            echo 'Error echo '.$ex->getMessage();
+        }
+
+        if(isset($_POST['last']) && !empty($u_id))
+        {
+            $sql = "INSERT INTO user_relationship_table (u_id,u_rel_first_name,u_rel_last_name,u_rel_email_id,u_rel_mobile_no,u_rel_dob,u_rel_type) VALUES('$u_id','$u_rel_first_name',' $u_rel_last_name','$u_rel_email_id','$u_rel_mobile_no','$u_rel_dob','$u_rel_type')";
+            if($conn->query($sql))
+            {
+
+            }
+            else
+            {
+                die('Error: ' . mysqli_error($conn));
+            }
+            }
+        }
     }
-    else
-    {
-        die('Error: ' . mysqli_error($conn));
-    }
-	}
 }
-
 ?>
 <!DOCTYPE html>
 
@@ -54,17 +89,17 @@ Like: www.facebook.com/keenthemes
        
 
  
-	   <meta charset="utf-8" />	
+       <meta charset="utf-8" /> 
         <title>Metronic | New User Profile | Account</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="" name="description" />
         <meta content="" name="author" />
-		
+        
         <!-- BEGIN LAYOUT FIRST STYLES -->
         <link href="//fonts.googleapis.com/css?family=Oswald:400,300,700" rel="stylesheet" type="text/css" />
         <!-- END LAYOUT FIRST STYLES -->
-		
+        
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
         <link href="../assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -73,41 +108,43 @@ Like: www.facebook.com/keenthemes
         <link href="../assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
         <link href="../assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
         <!-- END GLOBAL MANDATORY STYLES -->
-		
-		
+        
+        
         <!-- BEGIN PAGE LEVEL PLUGINS -->
         <link href="../assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
-		
-		<link href="../assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
+        
+        <link href="../assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
         <link href="../assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
         <link href="../assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
         <link href="../assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
         <link href="../assets/global/plugins/clockface/css/clockface.css" rel="stylesheet" type="text/css" />
-		
+        
         <!-- END PAGE LEVEL PLUGINS -->
-		
+        
         <!-- BEGIN THEME GLOBAL STYLES -->
         <link href="../assets/global/css/components-md.min.css" rel="stylesheet" id="style_components" type="text/css" />
         <link href="../assets/global/css/plugins-md.min.css" rel="stylesheet" type="text/css" />
         <!-- END THEME GLOBAL STYLES -->
-		
+        
         <!-- BEGIN PAGE LEVEL STYLES -->
         <link href="../assets/pages/css/profile.min.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL STYLES -->
-		
-		
+        
+        
         <!-- BEGIN THEME LAYOUT STYLES -->
         <link href="../assets/layouts/layout5/css/layout.min.css" rel="stylesheet" type="text/css" />
         <link href="../assets/layouts/layout5/css/custom.min.css" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
         <link rel="shortcut icon" href="favicon.ico" /> </head>
+         <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.js"></script>
+        
     <!-- END HEAD -->
-	
-	
-		<!-- BEGIN Bootstrap Form Helpers -->
-			<link href="http://bootstrapformhelpers.com/assets/css/bootstrap-formhelpers.min.css" rel="stylesheet" media="screen">
-		<!-- END Bootstrap Form Helpers -->
-		
+        
+        <!-- BEGIN Bootstrap Form Helpers -->
+            <link href="http://bootstrapformhelpers.com/assets/css/bootstrap-formhelpers.min.css" rel="stylesheet" media="screen">
+        <!-- END Bootstrap Form Helpers -->
+        
     <body class="page-header-fixed page-sidebar-closed-hide-logo page-md">
         <!-- BEGIN CONTAINER -->
         <div class="wrapper">
@@ -156,115 +193,96 @@ Like: www.facebook.com/keenthemes
                                                     <div class="tab-pane active" id="tab_1_1">
                                                         <form role="form" method="post" id="page1" action="relationship_details.php" >
                                                               <div id="form_clone_div" class="form_clone_div">
-															
-																
-																<div class="form-group">
+                                                            
+                                                                
+                                                                <div class="form-group">
                                                                 <label class="control-label">UserName</label>
-                                                                <input type="text" placeholder="" class="form-control" name="u_name[]" required /> </div>
-																
-																<div class="form-group">
-                                                                <label class="control-label">Password</label>
-                                                                <input type="password" placeholder="" class="form-control" name="u_password[]" required /> </div>
-																
-															<div class="form-group">
+                                                                <select class="form-control input-small" name="u_name[]" 
+                                                                 >
+                                                                            <option>Mr.</option>
+                                                                            <option>Mrs.</option>
+                                                                            <option>Ms.</option>
+                                                
+
+                                                                                                                                                    
+                                                                        </select> </div>
+                                                                
+                                                                
+                                                                
+                                                            <div class="form-group">
                                                                 <label class="control-label">First Name</label>
-                                                                <input type="text" placeholder="" class="form-control" name="u_rel_first_name[]" required /> </div>
-																
+                                                                <input type="text" placeholder="" class="form-control" name="u_rel_first_name[]"   /> </div>
+                                                                
                                                             <div class="form-group">
                                                                 <label class="control-label">Last Name</label>
-                                                                <input type="text" placeholder="" class="form-control" name="u_rel_last_name[]" required /> </div>
-																
+                                                                <input type="text" placeholder="" class="form-control" name="u_rel_last_name[]"   /> </div>
+                                                                
                                                             <div class="form-group">
                                                                 <label class="control-label">Mobile Number</label>
-																<div class="input-group input-icon right">
-																	<span class="input-group-addon">
-																	<i class="fa fa-mobile font-blue"></i>
-																	</span>
-                                                                <input type="text" placeholder="+919988665544" class="form-control" name="u_rel_mobile_no[]" required /> </div>
-															</div>
-																
-															<div class="form-group">
+                                                                <div class="input-group input-icon right">
+                                                                    <span class="input-group-addon">
+                                                                    <i class="fa fa-mobile font-blue"></i>
+                                                                    </span>
+                                                                <input type="text" placeholder="+919988665544" class="form-control" name="u_rel_mobile_no[]"   /> </div>
+                                                            </div>
+                                                                
+                                                            <div class="form-group">
                                                                 <label class="control-label">Email ID</label>
-																<div class="input-group input-icon right">
-																	<span class="input-group-addon">
-																	<i class="fa fa-envelope font-blue"></i>
-																	</span>
-														<i class="fa fa-exclamation tooltips" data-original-title="Invalid email." data-container="body"></i>
-                                                                <input type="text" placeholder="name@xyz.com" class="form-control" name="u_rel_email_id[]" required /> </div>
-															</div>
-															
-															
-															<div class="form-group">
-																<label class="control-label">Date of Birth</label>
-																<div class="input-group input-icon right">
-																	<span class="input-group-addon">
-																	<i class="fa fa-calendar font-blue"></i>
-																	</span>
-                                              <input class="form-control form-control-inline input-medium date-picker" size="16" type="text" value="" name="u_rel_dob[]" required /></div>
-															</div>
-															
-															
-															
-															<div class="form-group">
-																
-																<label class="control-label">Relation</label>
-																		<select class="form-control input-small" name="u_rel_type[]">
-																			<option>Parent</option>
-																			<option>Spouse</option>
-																			<option>Children</option>
-																			<option>Siblings</option>
+                                                                <div class="input-group input-icon right">
+                                                                    <span class="input-group-addon">
+                                                                    <i class="fa fa-envelope font-blue"></i>
+                                                                    </span>
+                                                        <i class="fa fa-exclamation tooltips" data-original-title="Invalid email." data-container="body"></i>
+                                                                <input type="email" placeholder="name@xyz.com" class="form-control" name="u_rel_email_id[]"   /> </div>
+                                                            </div>
+                                                            
+                                                            
+                                                            <div class="form-group">
+                                                                <label class="control-label">Date of Birth</label>
+                                                                <div class="input-group input-icon right">
+                                                                    <span class="input-group-addon">
+                                                                    <i class="fa fa-calendar font-blue"></i>
+                                                                    </span>
+                                              <input class="form-control form-control-inline input-medium date-picker" size="16" type="text" value="" name="u_rel_dob[]"   /></div>
+                                                            </div>
+                                                            
+                                                            
+                                                            
+                                                            <div class="form-group">
+                                                                
+                                                                <label class="control-label">Relation</label>
+                                                                        <select class="form-control input-small" name="u_rel_type[]" >
+                                                                            <option>Parent</option>
+                                                                            <option>Spouse</option>
+                                                                            <option>Children</option>
+                                                                            <option>Siblings</option>
 
-																																					
-																		</select>
-																</div>
-															
-															
-				
-											
-											
-														
-																		
-																
-                                                         
-																<div class="form-group">
-																<label class="control-label">Created date</label>
-																<div class="input-group input-icon right">
-																	<span class="input-group-addon">
-																	<i class="fa fa-calendar font-blue"></i>
-																	</span>
-                                              <input class="form-control form-control-inline input-medium date-picker" size="16" type="text" value="" name="u_rel_created_date[]" required /></div>
-															</div>
-															<div class="form-group">
-																<label class="control-label">Modified Date</label>
-																<div class="input-group input-icon right">
-																	<span class="input-group-addon">
-																	<i class="fa fa-calendar font-blue"></i>
-																	</span>
-                                              <input class="form-control form-control-inline input-medium date-picker" size="16" type="text" value="" name="u_rel_modified_date[]" required /></div>
-															</div>
+                                                                                                                                                    
+                                                                        </select>
+                                                                </div>  
                                                             </div>
                                                                  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
                                                     <script src="add_remove_form.js"> 
                                                     </script>   
-																
+                                                                
                                                             <div class="margiv-top-10" id="insert_before">
                                                      <button type="button" id="add_button" class="btn green">Add Member</button>  
                                                     <button type="button" id="remove_button" class="btn green">Remove Member</button>               
-													<button type="submit" class="btn green" name="last" id="page1">Submit</button> 
-													           
+                                                    <button type="submit" class="btn green" name="last" id="page1_submit">Submit</button> 
+                                                               
                                                                 <a href="javascript:;" class="btn default"> Cancel </a>
                                                             </div>
                                                         </form>
                                                     </div>
                                                     <!-- END PERSONAL INFO TAB -->
-													
+                                                    
             
-    		 
-			
-	
-													
+             
+            
+    
+                                                    
                                           
-													
+                                                    
                                                    
                                                             <!--end profile-settings-->
                                                             
@@ -863,42 +881,45 @@ Like: www.facebook.com/keenthemes
         <script src="../assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
         <script src="../assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
         <!-- END CORE PLUGINS -->
-		
+        
         <!-- BEGIN PAGE LEVEL PLUGINS -->
         <script src="../assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
         <script src="../assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script>
-		
-		<script src="../assets/global/plugins/moment.min.js" type="text/javascript"></script>
+        
+        <script src="../assets/global/plugins/moment.min.js" type="text/javascript"></script>
         <script src="../assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js" type="text/javascript"></script>
         <script src="../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
         <script src="../assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js" type="text/javascript"></script>
         <script src="../assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
         <script src="../assets/global/plugins/clockface/js/clockface.js" type="text/javascript"></script>
-		
-		
-		
-		
+        
+        
+        
+        
         <!-- END PAGE LEVEL PLUGINS -->
-		
+        
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
         <script src="../assets/global/scripts/app.min.js" type="text/javascript"></script>
         <!-- END THEME GLOBAL SCRIPTS -->
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <script src="../assets/pages/scripts/profile.min.js" type="text/javascript"></script>
-		
-		<script src="../assets/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
-		
-		
-		<!-- Bootstrap Form Helpers -->
-			<script src="http://bootstrapformhelpers.com/assets/js/bootstrap-formhelpers.min.js"></script>
-		
-		
-		
+        
+        <script src="../assets/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
+        
+        
+        <!-- Bootstrap Form Helpers -->
+            <script src="http://bootstrapformhelpers.com/assets/js/bootstrap-formhelpers.min.js"></script>
+        
+        
+        
         <!-- END PAGE LEVEL SCRIPTS -->
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <script src="../assets/layouts/layout5/scripts/layout.min.js" type="text/javascript"></script>
         <script src="../assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
+        <?php include 'footer.php';
+        ?>
     </body>
-
+    <script type="text/javascript" src="core.js"></script>
+    <script type="text/javascript" src="validate.js"></script>
 </html>
